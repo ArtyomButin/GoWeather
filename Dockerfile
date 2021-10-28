@@ -6,6 +6,7 @@ ADD . /app
 WORKDIR /app
 
 COPY go.* ./
+COPY .env ./
 RUN go mod download
 
 RUN go build -o main /app/cmd/

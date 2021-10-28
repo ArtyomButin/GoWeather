@@ -11,15 +11,15 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World!")
+		fmt.Fprintf(w, "Hello World!!")
 
 	})
 	if err := env.Load(); err != nil {
-		log.Print("No .env file found")
+		log.Print(".env file found")
 	}
 	port, exists := os.LookupEnv("APP_PORT")
 	if !exists {
-		log.Fatal(".env variable not found")
+		port = "8000"
 	}
 	builder := strings.Builder{}
 	builder.Grow(len(":") + len(port))

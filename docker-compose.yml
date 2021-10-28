@@ -21,7 +21,7 @@ services:
     restart:
       always
     ports:
-      - '${PGPORT:-3306}:5432'
+      - '${PGPORT}:5432'
     environment:
       POSTGRES_USER: '${PGUSER}'
       POSTGRES_PASSWORD: '${PGPASSWORD}'
