@@ -2,22 +2,24 @@ version: "3.5"
 services:
   web:
     container_name: go-app
-    build: ..
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart:
+      always
     ports:
-      - "8000:8000"
-      - "40000:40000"
+      - "${APP_PORT}:8000"
     environment:
       DD_DB_HOST: db
-    security_opt:
-      - "seccomp:unconfined"
-    cap_add:
-      - SYS_PTRACE
-    command: /dlv --headless --listen=:40000 --api-version=2 exec /server
     depends_on:
       - db
+    networks:
+      - go_app
   db:
     container_name: go-db
     image: postgres:13-alpine
+    restart:
+      always
     ports:
       - '${PGPORT:-3306}:5432'
     environment:
@@ -26,4 +28,16 @@ services:
       POSTGRES_DB: '${PGDATABASE}'
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - data:/var/lib/postgresql/data
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      - go_app
+networks:
+  go_app:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.220.0/28
+volumes:
+  dbdata:
+    driver: local
