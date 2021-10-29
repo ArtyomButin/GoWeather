@@ -1,21 +1,14 @@
-FROM golang:1.17-buster as builder
-
-RUN mkdir /app
-ADD . /app
+FROM golang:latest AS build-env
 
 WORKDIR /app
-
-COPY go.* ./
-COPY .env ./
+COPY . /app
+#RUN go get -d -v
 RUN go mod download
+RUN go mod verify
+RUN GOOS=linux GOARCH=amd64 go build -o /app /app/cmd/main.go
 
-RUN go build -o main /app/cmd/
+FROM scratch
+COPY --from=build-env /app /main
 
-FROM debian:buster-slim
-RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY --from=builder /app/main /app/main
 EXPOSE 8000
-CMD ["/app/main"]
+CMD ["./main"]
