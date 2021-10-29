@@ -1,14 +1,12 @@
-FROM golang:latest AS build-env
+FROM golang:latest AS builder
 
 WORKDIR /app
-COPY . /app
-#RUN go get -d -v
+COPY . .
 RUN go mod download
 RUN go mod verify
-RUN GOOS=linux GOARCH=amd64 go build -o /app /app/cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main cmd/main.go
 
 FROM scratch
-COPY --from=build-env /app /main
-
+COPY --from=builder app/main app/main
 EXPOSE 8000
-CMD ["./main"]
+CMD ["app/main"]

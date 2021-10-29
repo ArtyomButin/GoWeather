@@ -1,7 +1,9 @@
+include .env
+
 ## build: Build Dockerfile.
 build:
 	@echo "Building Go Binary..."
-	docker build --no-cache -f Dockerfile -t main .
+	docker build --no-cache -t goweather_web .
 
 ## start-server: Start in development mode. Gets reloaded automatically when code changes.
 start-server:
@@ -24,6 +26,9 @@ clean:
 
 web-container:
 	docker exec -itu root go-app /bin/bash
+
+db-container:
+	docker exec -it go-db psql psql -U${PGUSER} -h${APP_HOST} -d${PGDATABASE}
 
 help: Makefile
 	@echo
