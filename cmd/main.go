@@ -20,6 +20,6 @@ func main() {
 }
 
 func initConfig() error {
-	viper.SetConfigFile("../configs/config.yml")
+	viper.SetConfigFile("/home/anduser/GoProject/GoWeather/configs/config.yml")
 	return viper.ReadInConfig()
 }

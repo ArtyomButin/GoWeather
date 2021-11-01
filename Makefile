@@ -24,20 +24,25 @@ clean:
 	docker system prune -f
 	docker volume prune -f
 
+## web-container: exec web-container.
 web-container:
 	docker exec -itu root go-app /bin/bash
 
+## db-container: exec db container.
 db-container:
 	docker exec -it go-db psql psql -U${PGUSER} -h${APP_HOST} -d${PGDATABASE}
 
+## migrate-create: create new migration. You must pass the name of the table as an argument to table_name.Example "make migrate-create table_name=users"
 migrate-create:
 	migrate create -ext sql -dir db/migrations -seq create_$(table_name)_table
 
+## migrate-up: execute migration.If you want to specify the step of migrations, pass the step parameter. Example "make migrate-up step=2"
 migrate-up:
-	migrate -path ./db/migrations/ -database ${DATABASE_URL}'?sslmode=disable' up
+	migrate -path ./db/migrations/ -database ${DATABASE_URL}'?sslmode=disable' up $(step)
 
+## migrate-down: down migration. If you want to specify the step of migrations, pass the step parameter. Example "make migrate-up step=2"
 migrate-down:
-	migrate -path ./db/migrations/ -database ${DATABASE_URL}'?sslmode=disable' down
+	migrate -path ./db/migrations/ -database ${DATABASE_URL}'?sslmode=disable' down $(step)
 
 help: Makefile
 	@echo
