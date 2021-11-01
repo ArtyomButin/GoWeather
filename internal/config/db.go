@@ -2,25 +2,14 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"os"
+	"log"
 )
 
-func Connection()  {
-	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+func Connection() {
+	pool, err := pgxpool.Connect(context.Background(), "postgres://golang_user:golang_pass@go-db:5432/weather")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("Unable to establish connection: %v", err)
 	}
 	defer pool.Close()
-
-	var greeting string
-	err = pool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Println(greeting)
 }

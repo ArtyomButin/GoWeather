@@ -1,8 +1,5 @@
 http:
   port: 8000
-  maxHeaderBytes: 10s
-  readTimeout: 10s
-  writeTimeout: 10s
 db:
   username: "golang_user"
   host: "localhost"
