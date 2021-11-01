@@ -3,21 +3,24 @@ package config
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/v4"
-	"log"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"os"
 )
 
 func Connection()  {
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
-	defer func() {
-		err := conn.Close(context.Background())
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
+	defer pool.Close()
+
+	var greeting string
+	err = pool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Println(greeting)
 }

@@ -7,6 +7,11 @@ import (
 
 func Routes(router *gin.Engine) {
 	router.GET("/", welcome)
+	router.GET("/postgres", getConnection)
+}
+
+func getConnection(c *gin.Context){
+
 }
 
 func welcome(c *gin.Context) {
