@@ -30,6 +30,15 @@ web-container:
 db-container:
 	docker exec -it go-db psql psql -U${PGUSER} -h${APP_HOST} -d${PGDATABASE}
 
+migrate-create:
+	migrate create -ext sql -dir db/migrations -seq create_$(table_name)_table
+
+migrate-up:
+	migrate -path ./db/migrations/ -database ${DATABASE_URL}'?sslmode=disable' up
+
+migrate-down:
+	migrate -path ./db/migrations/ -database ${DATABASE_URL}'?sslmode=disable' down
+
 help: Makefile
 	@echo
 	@echo "Available commands:"
