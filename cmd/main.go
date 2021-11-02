@@ -12,6 +12,7 @@ func main() {
 		log.Fatalf("config initialization failed: %s", err.Error())
 	}
 	router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
 	routes.Routes(router)
 	err := router.Run(":"+viper.GetString("http.port"))
 	if err != nil {
@@ -20,6 +21,8 @@ func main() {
 }
 
 func initConfig() error {
-	viper.SetConfigFile("/home/anduser/GoProject/GoWeather/configs/config.yml")
+	viper.SetConfigType("yml")
+	viper.SetConfigName("main")
+	viper.AddConfigPath("./configs")
 	return viper.ReadInConfig()
 }
