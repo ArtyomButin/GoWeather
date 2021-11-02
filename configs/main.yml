@@ -6,5 +6,6 @@ db:
   port: "5432"
   dbname: "weather"
   sslmode: "disable"
+  url: "postgres://golang_user:golang_pass@localhost:5432/weather"
 cache:
   ttl: 3600s
