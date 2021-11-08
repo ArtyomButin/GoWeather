@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	PwSaltBytes = 32
-	tokenTTL    = 12 * time.Hour
-	signingKey  = "qrkjk#4#%35FSFJlja#4353KSFjH"
+	salt       = "^=Kv 0:P4F&)S]JEP80Ls<T2;.b)BLY"
+	tokenTTL   = 12 * time.Hour
+	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
 )
 
 type AuthService struct {
@@ -29,12 +29,11 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 }
 
 func (s *AuthService) CreateUser(user models.User) (int, error) {
-	user.Password = generatePasswordHash(user.Password)
+	user.Password = GeneratePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }
 
-func generatePasswordHash(password string) string {
-	salt := make([]byte, PwSaltBytes)
+func GeneratePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 
@@ -42,7 +41,7 @@ func generatePasswordHash(password string) string {
 }
 
 func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	user, err := s.repo.GetUser(username, generatePasswordHash(password))
+	user, err := s.repo.GetUser(username, GeneratePasswordHash(password))
 	if err != nil {
 		return "", err
 	}
