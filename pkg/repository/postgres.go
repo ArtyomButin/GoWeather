@@ -6,6 +6,10 @@ import (
 	"log"
 )
 
+const (
+	usersTable = "users"
+)
+
 type Config struct {
 	ConnStr string
 }
@@ -16,6 +20,5 @@ func NewPostgresDB(cfg Config) (*pgxpool.Pool, error) {
 		log.Fatalf("Unable to establish connection: %v", err)
 		return nil, err
 	}
-
 	return pool, nil
 }

@@ -3,7 +3,7 @@ include .env
 ## build: Build Dockerfile.
 build:
 	@echo "Building Go Binary..."
-	docker build --no-cache -t goweather_web .
+	docker build .
 
 ## start-server: Start in development mode. Gets reloaded automatically when code changes.
 start-server:

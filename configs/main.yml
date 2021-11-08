@@ -1,8 +1,11 @@
 http:
   port: 8000
 db:
+  driver: "postgres"
   username: "golang_user"
+  password: "golang_pass"
   host: "localhost"
+  docker_host: "go-db"
   port: "5432"
   dbname: "weather"
   sslmode: "disable"
