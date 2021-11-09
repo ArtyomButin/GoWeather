@@ -14,7 +14,7 @@ type Repository struct {
 	Authorization
 }
 
-func NewRepository(db *pgxpool.Pool) *Repository  {
+func NewRepository(db *pgxpool.Pool) *Repository {
 	return &Repository{
 		Authorization: NewAuthUser(db),
 	}

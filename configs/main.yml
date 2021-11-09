@@ -1,5 +1,6 @@
 http:
   port: 8000
+  host: "localhost"
 db:
   driver: "postgres"
   username: "golang_user"

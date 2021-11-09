@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/ArtyomButin/GoWeather/configs"
 	"github.com/ArtyomButin/GoWeather/pkg/handlers"
 	"github.com/ArtyomButin/GoWeather/pkg/repository"
 	"github.com/ArtyomButin/GoWeather/pkg/services"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,19 +16,18 @@ import (
 )
 
 func main() {
+	config := configs.GetConfig()
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	if err := initConfig(); err != nil {
-		logrus.Fatalf("error initializing configs: %s", err.Error())
-	}
 	db, err := repository.NewPostgresDB(repository.Config{
 		ConnStr: fmt.Sprintf("%s://%s:%s@%s:%s/%s",
-			viper.GetString("db.driver"),
-			viper.GetString("db.username"),
-			viper.GetString("db.password"),
-			viper.GetString("db.docker_host"),
-			viper.GetString("db.port"),
-			viper.GetString("db.dbname"),
+			config.Database.Driver,
+			config.Database.Username,
+			config.Database.Password,
+			config.Database.DockerHost,
+			config.Database.Port,
+			config.Database.DbName,
 		)})
+	defer db.Close()
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
@@ -38,7 +37,7 @@ func main() {
 	h := handlers.NewHandler(s)
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", viper.GetString("http.port")),
+		Addr:    fmt.Sprintf(":%s", config.Server.Port),
 		Handler: h.InitRoutes(),
 	}
 	go func() {
@@ -57,12 +56,4 @@ func main() {
 	if err := srv.Shutdown(ctx); err != nil {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
-	defer db.Close()
-}
-
-func initConfig() error {
-	viper.SetConfigType("yml")
-	viper.SetConfigName("main")
-	viper.AddConfigPath("./configs")
-	return viper.ReadInConfig()
 }

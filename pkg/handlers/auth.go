@@ -6,6 +6,14 @@ import (
 	"net/http"
 )
 
+type signUpResponse struct {
+	Id int
+}
+
+type signInResponse struct {
+	Token string
+}
+
 type signInInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
@@ -25,9 +33,7 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
-	})
+	c.JSON(http.StatusOK, signUpResponse{id})
 }
 
 func (h *Handler) signIn(c *gin.Context) {
@@ -42,8 +48,5 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"token": token,
-	})
+	c.JSON(http.StatusOK, signInResponse{token})
 }
